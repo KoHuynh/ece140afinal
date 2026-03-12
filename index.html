@@ -794,19 +794,72 @@ function showHeatTip(e, day, hour, val) {
 }
 function hideHeatTip() { document.getElementById('heatmapTooltip').style.display = 'none'; }
 
-const reputationData = [
-  { room: 'Room 412', avgTime: 42, count: 8 }, { room: 'Room 315', avgTime: 35, count: 5 },
-  { room: 'Unit 7C', avgTime: 28, count: 12 }, { room: 'Room 221', avgTime: 22, count: 6 },
-  { room: 'Room 108', avgTime: 11, count: 9 }, { room: 'Unit 3B', avgTime: 7, count: 14 },
-];
+function generateReputation() {
+
+  const collegeKey = document.getElementById('collegeSelect').value;
+  const buildingKey = document.getElementById('buildingSelect').value;
+
+  if (!collegeKey || !buildingKey) return [];
+
+  const college = locationData[collegeKey];
+  const building = college.buildings[buildingKey];
+
+  const floors = building.floors;
+
+  return floors.map((floor, i) => {
+
+    const seed = buildingKey.charCodeAt(0) + i * 7;
+
+    const avgTime = 5 + (seed % 40);
+
+    return {
+      room: floor || "Laundry Room",
+      avgTime: avgTime,
+      count: 5 + (seed % 15)
+    };
+
+  }).sort((a,b)=>a.avgTime-b.avgTime);
+
+}
 function renderReputation() {
+
+  const reputationData = generateReputation();
+
+  if (reputationData.length === 0) {
+    document.getElementById('repList').innerHTML =
+      '<div style="font-family:DM Mono;color:var(--text-dimmer);font-size:12px;">Select a building to see laundry reputation</div>';
+    return;
+  }
+
   const maxTime = Math.max(...reputationData.map(r=>r.avgTime));
+
   document.getElementById('repList').innerHTML = reputationData.map((r,i) => {
+
     const pct = (r.avgTime/maxTime)*100;
-    const color = r.avgTime>30?'var(--overdue)':r.avgTime>15?'var(--running)':'var(--free)';
-    const badge = r.avgTime>30?'😤':r.avgTime>15?'😐':r.avgTime<10?'🏆':'😊';
-    return `<div class="rep-item"><div class="rep-rank">#${i+1}</div><div class="rep-room">${r.room}</div><div class="rep-bar-wrap"><div class="rep-bar-fill" style="width:${pct}%;background:${color};"></div></div><div class="rep-time">${r.avgTime}m avg</div><div class="rep-badge">${badge}</div></div>`;
+
+    const color =
+      r.avgTime > 30 ? 'var(--overdue)' :
+      r.avgTime > 15 ? 'var(--running)' :
+      'var(--free)';
+
+    const badge =
+      r.avgTime > 30 ? '😤' :
+      r.avgTime > 15 ? '😐' :
+      r.avgTime < 10 ? '🏆' :
+      '😊';
+
+    return `
+    <div class="rep-item">
+      <div class="rep-rank">#${i+1}</div>
+      <div class="rep-room">${r.room}</div>
+      <div class="rep-bar-wrap">
+        <div class="rep-bar-fill" style="width:${pct}%;background:${color};"></div>
+      </div>
+      <div class="rep-time">${r.avgTime}m avg</div>
+      <div class="rep-badge">${badge}</div>
+    </div>`;
   }).join('');
+
 }
 
 let reviews = [
@@ -829,7 +882,7 @@ function renderReviews() {
     </div>`).join('');
 }
 
-function renderAll() { renderStats(); renderMachines(); renderHeatmap(); }
+function renderAll() { renderStats(); renderMachines(); renderHeatmap(); renderReputation();}
 
 // ===== MODALS =====
 function openModal(id) { document.getElementById(id).classList.add('open'); }
