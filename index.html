@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WashWatch</title>
+<title>WashWatch — Smart Laundry Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* ===== RESET & ROOT ===== */
@@ -1058,7 +1058,7 @@ footer {
     <div class="review-list" id="reviewList"></div>
   </div>
 
-  <footer>TUMBLE · FREE TO USE · NO ACCOUNT NEEDED · KNOW BEFORE YOU GO ™</footer>
+  <footer>WASHWATCH · FREE TO USE · NO ACCOUNT NEEDED · KNOW BEFORE YOU GO ™</footer>
 </div>
 
 <script>
@@ -1613,7 +1613,7 @@ function scheduleNotification(machineId, mins) {
       const m = getMachineById(machineId);
       if (m && m.status === 'running') {
         showToast('warning', '⏰ 5 minutes left!', `${m.name} finishes in ~5 min. Head over!`);
-        if (notificationsEnabled) new Notification('Tumble · 5 min left!', { body: `${m.name} finishes soon. Head to the laundry room!`, icon: '🌀' });
+        if (notificationsEnabled) new Notification('WashWatch · 5 min left!', { body: `${m.name} finishes soon. Head to the laundry room!`, icon: '🌀' });
       }
     }, warnAt);
   }
@@ -1624,14 +1624,14 @@ function scheduleNotification(machineId, mins) {
       m.status = 'buffer';
       m.bufferStart = Date.now();
       showToast('success', '✅ Cycle Done!', `${m.name} is finished. You have 5 min to pick up.`);
-      if (notificationsEnabled) new Notification('Tumble · Done!', { body: `${m.name} is done! Pick up your clothes in the next 5 minutes.`, icon: '🌀' });
+      if (notificationsEnabled) new Notification('WashWatch · Done!', { body: `${m.name} is done! Pick up your clothes in the next 5 minutes.`, icon: '🌀' });
       renderAll();
       setTimeout(() => {
         const m2 = getMachineById(machineId);
         if (m2 && (m2.status === 'buffer' || isMine(m2))) {
           m2.status = 'overdue';
           showToast('danger', '⚠️ Clothes still in machine!', `${m2.name} — your clothes are blocking the machine!`);
-          if (notificationsEnabled) new Notification('Tumble · Please pick up!', { body: `Your clothes in ${m2.name} are blocking others. Please grab them!`, icon: '⚠️' });
+          if (notificationsEnabled) new Notification('WashWatch · Please pick up!', { body: `Your clothes in ${m2.name} are blocking others. Please grab them!`, icon: '⚠️' });
           renderAll();
         }
       }, 5 * 60 * 1000);
@@ -1699,7 +1699,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 // ===== DEMO: simulate a cycle completing for one machine =====
 function demoMode() {
   // Show some initial toasts
-  setTimeout(() => showToast('info', '👋 Welcome to Tumble!', 'No login needed. Scan a QR code to claim a machine.'), 1000);
+  setTimeout(() => showToast('info', '👋 Welcome to WashWatch!', 'No login needed. Scan a QR code to claim a machine.'), 1000);
   setTimeout(() => showToast('warning', '⏰ Heads up, Room 412', 'D-2 has been sitting unattended for 2 min...'), 3500);
 }
 
